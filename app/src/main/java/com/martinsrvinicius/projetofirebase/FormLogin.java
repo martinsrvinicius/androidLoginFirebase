@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.martinsrvinicius.projetofirebase.databinding.ActivityFormLoginBinding;
 
 public class FormLogin extends AppCompatActivity {
@@ -21,7 +22,6 @@ public class FormLogin extends AppCompatActivity {
         getSupportActionBar().hide();
 
         binding.progressBar.setVisibility(View.INVISIBLE);
-
         binding.textRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
