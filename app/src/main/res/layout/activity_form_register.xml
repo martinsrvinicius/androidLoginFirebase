@@ -49,7 +49,7 @@
         app:layout_constraintTop_toBottomOf="@id/edit_nome" />
 
     <EditText
-        android:id="@+id/edit_senha"
+        android:id="@+id/edit_password"
         style="@style/EditText"
         android:layout_height="64dp"
         android:drawableRight="@drawable/ic_eye"

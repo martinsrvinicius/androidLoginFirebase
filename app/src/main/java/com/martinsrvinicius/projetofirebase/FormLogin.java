@@ -33,18 +33,9 @@ public class FormLogin extends AppCompatActivity {
         binding.btnEnter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switchVisibility();
             }
         });
     }
 
-    private void switchVisibility () {
-        isProgress = !isProgress;
 
-        if (isProgress) {
-            binding.progressBar.setVisibility(View.VISIBLE);
-        } else {
-            binding.progressBar.setVisibility(View.INVISIBLE);
-        }
-    }
 }
