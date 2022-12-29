@@ -16,6 +16,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.martinsrvinicius.projetofirebase.databinding.ActivityFormRegisterBinding;
 
 public class FormRegister extends AppCompatActivity {
@@ -59,6 +62,25 @@ public class FormRegister extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             Snackbar snackbar = Snackbar.make(view, messages[1], Snackbar.LENGTH_SHORT);
+                            snackbar.setBackgroundTint(Color.WHITE);
+                            snackbar.setTextColor(Color.BLACK);
+                            snackbar.show();
+                        } else {
+                            String erro;
+                            try {
+                                throw task.getException();
+                            } catch (FirebaseAuthWeakPasswordException e) {
+                                erro = "Digite uma senha com no mínimo 6 caracteres";
+                            } catch (FirebaseAuthUserCollisionException e) {
+                                erro = "Esta conta já foi cadastrada";
+                            } catch (FirebaseAuthInvalidCredentialsException e) {
+                                erro = "E-mail inválido";
+                            }
+                            catch (Exception e) {
+                                erro = "Erro ao cadastrar usuário";
+                            }
+
+                            Snackbar snackbar = Snackbar.make(view, erro, Snackbar.LENGTH_SHORT);
                             snackbar.setBackgroundTint(Color.WHITE);
                             snackbar.setTextColor(Color.BLACK);
                             snackbar.show();
