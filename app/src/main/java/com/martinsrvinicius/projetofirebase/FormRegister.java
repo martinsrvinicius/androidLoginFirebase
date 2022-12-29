@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
@@ -19,12 +21,18 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.martinsrvinicius.projetofirebase.databinding.ActivityFormRegisterBinding;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class FormRegister extends AppCompatActivity {
 
     private ActivityFormRegisterBinding binding;
-    String[] messages = {"Preencha todos os campos", "Cadastro realizado com sucesso!"};
+    private String[] messages = {"Preencha todos os campos", "Cadastro realizado com sucesso!"};
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +55,13 @@ public class FormRegister extends AppCompatActivity {
                     snackbar.setTextColor(Color.BLACK);
                     snackbar.show();
                 } else {
-                    createNewUser(view, email, password);
+                    createNewUser(view, name, email, password);
                 }
             }
         });
     }
 
-    private void createNewUser(View view, String email, String password) {
+    private void createNewUser(View view, String name, String email, String password) {
         Log.d(TAG, "createNewUser: " + email + " " + password);
 
         FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
@@ -61,6 +69,7 @@ public class FormRegister extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            saveUserData(name);
                             Snackbar snackbar = Snackbar.make(view, messages[1], Snackbar.LENGTH_SHORT);
                             snackbar.setBackgroundTint(Color.WHITE);
                             snackbar.setTextColor(Color.BLACK);
@@ -75,8 +84,7 @@ public class FormRegister extends AppCompatActivity {
                                 erro = "Esta conta já foi cadastrada";
                             } catch (FirebaseAuthInvalidCredentialsException e) {
                                 erro = "E-mail inválido";
-                            }
-                            catch (Exception e) {
+                            } catch (Exception e) {
                                 erro = "Erro ao cadastrar usuário";
                             }
 
@@ -87,5 +95,27 @@ public class FormRegister extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    public void saveUserData(String name) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> users = new HashMap<>();
+        users.put("nome", name);
+
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        DocumentReference documentReference = db.collection("Usuários").document(userId);
+        documentReference.set(users).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                Log.d(TAG, "onSuccess: Sucesso ao salvar os dados");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, "onFailure: Erro ao salvar os dados " + e.toString());
+
+            }
+        });
     }
 }
