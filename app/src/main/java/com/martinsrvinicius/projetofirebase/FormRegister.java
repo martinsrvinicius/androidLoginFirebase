@@ -109,6 +109,7 @@ public class FormRegister extends AppCompatActivity {
             @Override
             public void onSuccess(Void unused) {
                 Log.d(TAG, "onSuccess: Sucesso ao salvar os dados");
+                profileIntent();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -117,5 +118,11 @@ public class FormRegister extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void profileIntent() {
+        Intent intent = new Intent(FormRegister.this, Profile.class);
+        startActivity(intent);
+        finish();
     }
 }
